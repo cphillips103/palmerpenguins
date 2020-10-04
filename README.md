@@ -9,7 +9,7 @@ a model can be built to identify penguin species based on body measurements.
 ### Description
 The palmerpenguins data contains size measurements for three penguin species observed on three islands in the Palmer Archipelago, Antarctica.
 
-![Palmer Penguins](https://www.google.com/imgres?imgurl=https%3A%2F%2Fallisonhorst.github.io%2Fpalmerpenguins%2Fman%2Ffigures%2Flter_penguins.png&imgrefurl=https%3A%2F%2Fallisonhorst.github.io%2Fpalmerpenguins%2Farticles%2Fintro.html&tbnid=rzLkt1bWuAmkWM&vet=12ahUKEwi-wdaD0pnsAhXMIN8KHeS8BiIQMygAegUIARCaAQ..i&docid=TN2WqnX3CMOmQM&w=1800&h=1074&q=palmer%20penguins&ved=2ahUKEwi-wdaD0pnsAhXMIN8KHeS8BiIQMygAegUIARCaAQ)
+![Palmer Penguins](https://github.com/allisonhorst/palmerpenguins/blob/master/man/figures/lter_penguins.png)
 Artwork by Allison Horst @allison_horst.
 
 
