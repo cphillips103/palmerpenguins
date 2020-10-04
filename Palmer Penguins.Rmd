@@ -1,0 +1,162 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+```{r}
+#Install Remote Package if not already available
+
+#install.packages("remotes")
+
+#Install Palmer Penguin Data
+#remotes::install_github("allisonhorst/palmerpenguins")
+
+```
+
+#citation("palmerpenguins")
+#> 
+#> To cite palmerpenguins in publications use:
+#> 
+#>   Horst AM, Hill AP, Gorman KB (2020). palmerpenguins: Palmer
+#>   Archipelago (Antarctica) penguin data. R package version 0.1.0.
+#>   https://allisonhorst.github.io/palmerpenguins/. doi:
+#>   10.5281/zenodo.3960218.
+#> 
+#> A BibTeX entry for LaTeX users is
+#> 
+#>   @Manual{,
+#>     title = {palmerpenguins: Palmer Archipelago (Antarctica) penguin data},
+#>     author = {Allison Marie Horst and Alison Presmanes Hill and Kristen B Gorman},
+#>     year = {2020},
+#>     note = {R package version 0.1.0},
+#>     doi = {10.5281/zenodo.3960218},
+#>     url = {https://allisonhorst.github.io/palmerpenguins/},
+#>   }
+
+```{r}
+#Load Palmer Penguin library and data set
+library(palmerpenguins)
+data(package = 'palmerpenguins')
+```
+
+```{r}
+#Load libraries we need for dataframe manipulation and plotting
+library(tidyr)
+library(dplyr)
+library(ggplot2)
+library(gridExtra)
+```
+
+
+```{r}
+#Initial look at the raw data set
+head(penguins_raw)
+```
+
+```{r}
+#Look at the reduced data set
+head(penguins)
+```
+
+
+
+```{r}
+#Look at the data set
+str(penguins)
+```
+
+
+```{r}
+#Look at number of species in data set
+table(penguins$species)
+```
+```{r}
+dim(penguins)
+```
+
+```{r}
+#Copy data into new datafrme and look at Column names for calculations
+
+df <- penguins
+names(df)
+```
+```{r}
+#Examine penguin data set with pairs matrix
+pairs(penguins, col=penguins$species)
+```
+
+```{r}
+#Initial plot to see which parameters might yield clues about species types
+#Species vs body mass
+ggplot(aes(x = species, y = body_mass_g), data = df) + geom_boxplot() +
+  stat_summary(fun = mean, geom = 'point', shape = 4)
+```
+
+```{r}
+#Initial plot to see which parameters might yield clues about species types
+#Species vs bill length
+ggplot(aes(x = species, y = bill_length_mm), data = df) + geom_boxplot() +
+  stat_summary(fun = mean, geom = 'point', shape = 4)
+```
+
+```{r}
+#Initial plot to see which parameters might yield clues about species types
+#Species vs bill depth
+ggplot(aes(x = species, y = bill_depth_mm), data = df) + geom_boxplot() +
+  stat_summary(fun = mean, geom = 'point', shape = 4)
+```
+
+```{r}
+#Initial plot to see which parameters might yield clues about species types
+#Species vs flipper length
+ggplot(aes(x = species, y = flipper_length_mm), data = df) + geom_boxplot() +
+  stat_summary(fun = mean, geom = 'point', shape = 4)
+
+```
+
+
+
+
+
+```{r}
+#Grid analysis of histograms of the parameers: Lengt and Width and the Petal Length and Width.
+# "species"           "island"            "bill_length_mm"    "bill_depth_mm"     "flipper_length_mm"
+# "body_mass_g"       "sex"               "year"     
+
+p1 <- ggplot(aes(x = bill_length_mm, fill = species), data = df) +
+  facet_wrap(~species) + geom_histogram()
+
+p2 <- ggplot(aes(x = bill_depth_mm, fill = species), data = df) +
+  facet_wrap(~species) + geom_histogram()
+
+p3 <- ggplot(aes(x = flipper_length_mm, fill = species), data = df) +
+  facet_wrap(~species) + geom_histogram()
+
+p4 <- ggplot(aes(x = body_mass_g, fill = species), data = df) +
+  facet_wrap(~species) + geom_histogram()
+
+
+grid.arrange(p1, p2, p3, p4, ncol = 2)
+```
+
+
+
+
+
+
+
+
+
+
+
+
