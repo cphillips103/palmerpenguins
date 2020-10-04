@@ -1,7 +1,7 @@
 ### October 3, 2020
 
 ### Palmer Penguins Analysis
-*Overview:*
+*Overview*
 
 This project is to explore the Palmer Penguin Data and see if
 a model can be built to identify penguin species based on body measurements.
