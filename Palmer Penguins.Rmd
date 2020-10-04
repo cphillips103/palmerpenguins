@@ -1,6 +1,8 @@
 ---
 title: "R Notebook"
-output: html_notebook
+output:
+  pdf_document: default
+  html_notebook: default
 ---
 
 This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
@@ -42,6 +44,8 @@ The preview shows you a rendered HTML copy of the contents of the editor. Conseq
 #>     doi = {10.5281/zenodo.3960218},
 #>     url = {https://allisonhorst.github.io/palmerpenguins/},
 #>   }
+#> Also help from Jason Brownlee on machine learning in R February 3, 2016 article
+
 
 ```{r}
 #Load Palmer Penguin library and data set
@@ -55,7 +59,10 @@ library(tidyr)
 library(dplyr)
 library(ggplot2)
 library(gridExtra)
+library(caret)
+library(ellipse)
 ```
+
 ```{r}
 library(cluster) 
 
@@ -69,7 +76,7 @@ library(knitr)
 
 ```{r}
 #Initial look at the raw data set
-head(penguins_raw)
+head(penguins)
 ```
 
 ```{r}
@@ -99,10 +106,7 @@ dim(penguins)
 df <- penguins
 names(df)
 ```
-```{r}
-#Examine penguin data set with pairs matrix
-pairs(penguins, col=penguins$species)
-```
+
 
 ```{r}
 #Initial plot to see which parameters might yield clues about species types
@@ -208,10 +212,146 @@ table(clusters_penguins$cluster, penguins_no_na$species)
 
 
 ```
+#Modeling Work
+#Goal is to determine if a model can be built to predict the species of penguin
+#based on measurements
+
+```{r}
+#Create a Validation Dataset
+set.seed(3456)
+validation_index <- createDataPartition(data_for_clustering_no_na$species, p=0.80, list=FALSE)
+# select 20% of the data for validation
+validation <- data_for_clustering_no_na[-validation_index,]
+# use the remaining 80% of data to training and testing the models
+data_for_clustering_no_na <- data_for_clustering_no_na[validation_index,]
+
+```
+
+```{r}
+#Summary of the data set
+dim(data_for_clustering_no_na)
+```
+
+```{r}
+# list types for each attribute
+sapply(data_for_clustering_no_na, class)
+```
+
+```{r}
+# take a peek at the first 5 rows of the data
+head(data_for_clustering_no_na)
+```
 
 
+```{r}
+
+2
+# list the levels for the class
+levels(data_for_clustering_no_na$species)
+```
+```{r}
+
+# summarize the class distribution
+percentage <- prop.table(table(data_for_clustering_no_na$species)) * 100
+cbind(freq=table(data_for_clustering_no_na$species), percentage=percentage)
+
+```
+
+```{r}
+# summarize attribute distributions
+summary(data_for_clustering_no_na)
+```
+
+```{r}
+#Visualize Data set
 
 
+# split input and output
+x <- data_for_clustering_no_na[,3:6]
+y <- data_for_clustering_no_na[,1]
 
 
+```
+
+```{r}
+# barplot for class breakdown
+plot(y)
+```
+
+```{r}
+
+# scatterplot matrix
+featurePlot(x=x, y=y$species, plot="ellipse")
+```
+
+```{r}
+# box and whisker plots for each attribute
+featurePlot(x=x, y=y$species, plot="box")
+```
+
+```{r}
+
+1
+2
+3
+# density plots for each attribute by class value
+scales <- list(x=list(relation="free"), y=list(relation="free"))
+featurePlot(x=x, y=y$species, plot="density", scales=scales)
+```
+
+```{r}
+#Evaluate Some Algorithms
+
+# Run algorithms using 10-fold cross validation
+control <- trainControl(method="cv", number=10, savePredictions = TRUE)
+metric <- "Accuracy"
+
+
+```
+
+```{r}
+
+# a) linear algorithms
+set.seed(7)
+fit.lda <- train(species~., data=data_for_clustering_no_na, method="lda", metric=metric, trControl=control)
+# b) nonlinear algorithms
+# CART
+set.seed(7)
+fit.cart <- train(species~., data=data_for_clustering_no_na, method="rpart", metric=metric, trControl=control)
+# kNN
+set.seed(7)
+fit.knn <- train(species~., data=data_for_clustering_no_na, method="knn", metric=metric, trControl=control)
+# c) advanced algorithms
+# SVM
+set.seed(7)
+fit.svm <- train(species~., data=data_for_clustering_no_na, method="svmRadial", metric=metric, trControl=control)
+# Random Forest
+set.seed(7)
+fit.rf <- train(species~., data=data_for_clustering_no_na, method="rf", metric=metric, trControl=control)
+```
+
+```{r}
+# summarize accuracy of models
+results <- resamples(list(lda=fit.lda, cart=fit.cart, knn=fit.knn, svm=fit.svm, rf=fit.rf))
+summary(results)
+```
+```{r}
+
+# compare accuracy of models
+dotplot(results)
+```
+
+```{r}
+# Summarize Best Model
+print(fit.svm)
+
+```
+
+```{r}
+
+# estimate skill of best model on the validation dataset
+predictions <- predict(fit.svm, validation)
+confusionMatrix(predictions, validation$species)
+
+```
 
