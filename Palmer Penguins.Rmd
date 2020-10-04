@@ -56,6 +56,15 @@ library(dplyr)
 library(ggplot2)
 library(gridExtra)
 ```
+```{r}
+library(cluster) 
+
+library(fpc)
+
+library(factoextra)
+
+library(knitr)
+```
 
 
 ```{r}
@@ -98,29 +107,33 @@ pairs(penguins, col=penguins$species)
 ```{r}
 #Initial plot to see which parameters might yield clues about species types
 #Species vs body mass
-ggplot(aes(x = species, y = body_mass_g), data = df) + geom_boxplot() +
-  stat_summary(fun = mean, geom = 'point', shape = 4)
+bp<-ggplot(aes(x = species, y = body_mass_g, fill=species), data = df) + geom_boxplot() + coord_flip()
+
+bp + scale_fill_hue(l=40, c=35)
 ```
 
 ```{r}
 #Initial plot to see which parameters might yield clues about species types
 #Species vs bill length
-ggplot(aes(x = species, y = bill_length_mm), data = df) + geom_boxplot() +
-  stat_summary(fun = mean, geom = 'point', shape = 4)
+bp<-ggplot(aes(x = species, y = bill_length_mm, fill=species), data = df) + geom_boxplot() + coord_flip()
+
+bp + scale_fill_hue(l=40, c=35)
 ```
 
 ```{r}
 #Initial plot to see which parameters might yield clues about species types
 #Species vs bill depth
-ggplot(aes(x = species, y = bill_depth_mm), data = df) + geom_boxplot() +
-  stat_summary(fun = mean, geom = 'point', shape = 4)
+bp<-ggplot(aes(x = species, y = bill_depth_mm, fill=species), data = df) + geom_boxplot() + coord_flip()
+
+bp + scale_fill_hue(l=40, c=35)
 ```
 
 ```{r}
 #Initial plot to see which parameters might yield clues about species types
 #Species vs flipper length
-ggplot(aes(x = species, y = flipper_length_mm), data = df) + geom_boxplot() +
-  stat_summary(fun = mean, geom = 'point', shape = 4)
+bp<-ggplot(aes(x = species, y = flipper_length_mm, fill=species), data = df) + geom_boxplot() + coord_flip()
+
+bp + scale_fill_hue(l=40, c=35)
 
 ```
 
@@ -134,25 +147,67 @@ ggplot(aes(x = species, y = flipper_length_mm), data = df) + geom_boxplot() +
 # "body_mass_g"       "sex"               "year"     
 
 p1 <- ggplot(aes(x = bill_length_mm, fill = species), data = df) +
-  facet_wrap(~species) + geom_histogram()
+  geom_histogram()
 
 p2 <- ggplot(aes(x = bill_depth_mm, fill = species), data = df) +
-  facet_wrap(~species) + geom_histogram()
+   geom_histogram()
 
-p3 <- ggplot(aes(x = flipper_length_mm, fill = species), data = df) +
-  facet_wrap(~species) + geom_histogram()
+p3 <- ggplot(aes(x = flipper_length_mm, fill = species), data = df) + geom_histogram()
 
 p4 <- ggplot(aes(x = body_mass_g, fill = species), data = df) +
-  facet_wrap(~species) + geom_histogram()
+   geom_histogram()
 
 
 grid.arrange(p1, p2, p3, p4, ncol = 2)
 ```
 
+```{r}
+str(penguins)
+```
+
+```{r}
+ggplot(penguins, aes(x = island, fill = species)) +
+  geom_bar(alpha = 0.8) +
+  scale_fill_manual(values = c("darkorange","purple","cyan4"),
+                    guide = FALSE) +
+  theme_minimal() +
+  facet_wrap(~species, ncol = 1) +
+  coord_flip()
 
 
+```
 
 
+```{r}
+penguins %>%
+  select(species, body_mass_g, ends_with("_mm")) %>%
+  GGally::ggpairs(aes(color = species)) +
+  scale_colour_manual(values = c("darkorange","purple","cyan4")) +
+  scale_fill_manual(values = c("darkorange","purple","cyan4"))
+```
+
+```{r}
+
+#Variables used in clustering "bill_length_mm"  "bill_depth_mm" "flipper_length_mm" "body_mass_g"
+
+set.seed(20)
+data_for_clustering <- df
+
+
+data_for_clustering_no_na <- drop_na(data_for_clustering)
+
+#kmeans data clustering partitioning (assuming 3 centers or clusters).
+
+clusters_penguins <- kmeans(data_for_clustering_no_na[,3:6], nstart = 20, centers = 3)
+
+plotcluster(data_for_clustering_no_na[,3:6], clusters_penguins$cluster, color = TRUE, shade = TRUE)
+
+penguins_no_na <- drop_na(penguins)
+
+table(clusters_penguins$cluster, penguins_no_na$species)
+
+
+```
 
 
 
