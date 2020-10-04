@@ -22,9 +22,8 @@ https://allisonhorst.github.io/palmerpenguins/. doi:
 These data were collected from 2007 - 2009 by Dr. Kristen Gorman with the Palmer Station Long Term Ecological Research Program, part of the US Long Term Ecological Research Network. The data were imported directly from the Environmental Data Initiative (EDI) Data Portal, and are available for use by CC0 license (“No Rights Reserved”) in accordance with the Palmer Station Data Policy.
 
 ### Analysis Variables And Software
-Database Diagram
 
-![Image of Schima](https://video.udacity-data.com/topher/2018/September/5ba95d23_dvd-rental-erd-2/dvd-rental-erd-2.png)
+TBD
 
 
 ### Comments On Findings
