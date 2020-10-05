@@ -55,7 +55,7 @@ library(factoextra)
 library(knitr)
 
 
-### Initial look at the reduced data set
+Initial look at the reduced data set
 head(penguins)
    A tibble: 6 x 8
      species island bill_length_mm bill_depth_mm flipper_length_~ body_mass_g sex  
@@ -70,7 +70,7 @@ head(penguins)
 
 Some data will likely not be necesary for prediction purposes like “sex” and “year”.
 
-### Look at the data set columns and data types.
+Look at the data set columns and data types.
 str(penguins)
    tibble [344 x 8] (S3: tbl_df/tbl/data.frame)
     $ species          : Factor w/ 3 levels "Adelie","Chinstrap",..: 1 1 1 1 1 1 1 1 1 1 ...
@@ -85,20 +85,20 @@ str(penguins)
 Essentially, we have three species: “Adelie”, “Chinstrap”, and “Gentoo”.
 The penguins are located across three islands: “Biscoe”, “Dream”, and “Torgersen”
 
-### Look at number of species in data set
+Look at number of species in data set
 table(penguins$species)
    
       Adelie Chinstrap    Gentoo 
          152        68       124
 
-### Taking a look at the dimensions of the reduced data set
+Taking a look at the dimensions of the reduced data set
 dim(penguins)
    [1] 344   8
 
 There are 344 rows, matching the count of penguins with 8 columns.
 However, the data does include some “NA” or non measured penguins. Those rows will need to be dropped for the machine learning analysis.
 
-### Copy data into new dataframe and look at Column names for calculations
+Copy data into new dataframe and look at Column names for calculations
 
 df <- penguins
 names(df)
@@ -106,7 +106,7 @@ names(df)
    [4] "bill_depth_mm"     "flipper_length_mm" "body_mass_g"      
    [7] "sex"               "year"
 
-### Initial plot to see which parameters might yield clues about species types species vs body mass
+Initial plot to see which parameters might yield clues about species types species vs body mass
 
 bp<-ggplot(aes(x = species, y = body_mass_g, fill=species), data = df) + geom_boxplot() + coord_flip()
 
@@ -117,7 +117,7 @@ bp + scale_fill_hue(l=40, c=35)
 
 It appears for body mass that the Chinstrap and Adelie penguins share some ### similarities, while the Gentoo penguins are heavier.
 
-### Initial plot to see which parameters might yield clues about species types species vs bill length
+Initial plot to see which parameters might yield clues about species types species vs bill length
 bp<-ggplot(aes(x = species, y = bill_length_mm, fill=species), data = df) + geom_boxplot() + coord_flip()
 
 bp + scale_fill_hue(l=40, c=35)
@@ -127,7 +127,7 @@ bp + scale_fill_hue(l=40, c=35)
 
 On the other hand, the Chinstrap and Gentoo penguins share similar ### bill length.
 
-### Initial plot to see which parameters might yield clues about species types species vs bill depth
+Initial plot to see which parameters might yield clues about species types species vs bill depth
 bp<-ggplot(aes(x = species, y = bill_depth_mm, fill=species), data = df) + geom_boxplot() + coord_flip()
 
 bp + scale_fill_hue(l=40, c=35)
@@ -137,7 +137,7 @@ bp + scale_fill_hue(l=40, c=35)
 
 Chinstrap and Adelie penguins have overlap in bill depth.
 
-### Initial plot to see which parameters might yield clues about species types species vs flipper length
+Initial plot to see which parameters might yield clues about species types species vs flipper length
 bp<-ggplot(aes(x = species, y = flipper_length_mm, fill=species), data = df) + geom_boxplot() + coord_flip()
 
 bp + scale_fill_hue(l=40, c=35)
@@ -146,7 +146,7 @@ bp + scale_fill_hue(l=40, c=35)
 
 And lastly, Chinstrap and Adelie penguins have some overlap in flipper length
 
-### Grid analysis of histograms of the parameters: Length and Width and the Petal Length and Width.
+Grid analysis of histograms of the parameters: Length and Width and the Petal Length and Width.
 "species"           "island"            "bill_length_mm"    "bill_depth_mm"     "flipper_length_mm"
 "body_mass_g"       "sex"               "year"     
 
@@ -168,7 +168,7 @@ grid.arrange(p1, p2, p3, p4, ncol = 2)
 
 Again, using the histograms, we the same overlaps in a more colorful fashion.
 
-### Looking at which penguins were measure on which islands
+Looking at which penguins were measure on which islands
 
 ggplot(penguins, aes(x = island, fill = species)) +
   geom_bar(alpha = 0.8) +
@@ -195,23 +195,23 @@ penguins %>%
 
 The pairwise graph sums up our previous findings.
 
-### Before modeling, it is good to look to see if there is any clustering in the data set
+Before modeling, it is good to look to see if there is any clustering in the data set
 
-### Variables used in clustering "Island", bill_length_mm", "bill_depth_mm",
-### "flipper_length_mm", and "body_mass_g"
+Variables used in clustering "Island", bill_length_mm", "bill_depth_mm",
+"flipper_length_mm", and "body_mass_g"
 
-### Seed for starting number used to generate a sequence of random numbers
+Seed for starting number used to generate a sequence of random numbers
 set.seed(20)
 
-### Creating new dataframe for clustering.
+Creating new dataframe for clustering.
 data_for_clustering <- df
 
-### Dropping "NA" values
+Dropping "NA" values
 data_for_clustering_no_na <- drop_na(data_for_clustering)
 
-### kmeans data clustering partitioning (assuming 3 centers or clusters).
+kmeans data clustering partitioning (assuming 3 centers or clusters).
 
-### Using Species as the target, with features "bill_length_mm" "bill_depth_mm" "flipper_length_mm" and "body_mass_g" 
+Using Species as the target, with features "bill_length_mm" "bill_depth_mm" "flipper_length_mm" and "body_mass_g" 
 
 clusters_penguins <- kmeans(data_for_clustering_no_na[,4:6], centers = 3)
 
@@ -219,9 +219,9 @@ plotcluster(data_for_clustering_no_na[,3:6], clusters_penguins$cluster, color = 
  
 ![Cluster Plot](https://github.com/cphillips103/palmerpenguins/blob/main/penguin-images/clusterplot.png) 
 
-### Clustering does indicate that there is some separation in the penguin data that might lend itself for modeling.
+Clustering does indicate that there is some separation in the penguin data that might lend itself for modeling.
 
-### Creating clustering table to exam if there is proper separation
+Creating clustering table to exam if there is proper separation
 penguins_no_na <- drop_na(penguins)
 
 table(clusters_penguins$cluster, penguins_no_na$species)
@@ -231,17 +231,17 @@ table(clusters_penguins$cluster, penguins_no_na$species)
      2     34        15     57
      3    112        53      1
 
-### It appears that some of the penguins aren’t properly categorized due to the feature overlaps
-### Modeling Work Goal is to determine if a model can be built to predict the species of penguin based on measurements
-### Data will be split into a test set and a validation set.
-### Create a Validation Dataset
+It appears that some of the penguins aren’t properly categorized due to the feature overlaps
+Modeling Work Goal is to determine if a model can be built to predict the species of penguin based on measurements
+Data will be split into a test set and a validation set.
+Create a Validation Dataset
 
-### Starting with clean dataframe and removing "NA" values
+Starting with clean dataframe and removing "NA" values
 
 
 data_for_model <- df
 
-### Dropping "NA" values
+Dropping "NA" values
 data_for_model_no_na <- drop_na(data_for_model)
 
 
@@ -249,27 +249,28 @@ set.seed(300)
 
 validation_index <- createDataPartition(data_for_model_no_na$species, p=0.80, list=FALSE)
 
-### select 20% of the data for validation
+Select 20% of the data for validation
 validation <- data_for_model_no_na[-validation_index,]
 
 
-### use the remaining 80% of data to training and testing the models
+use the remaining 80% of data to training and testing the models
 data_for_model_no_na <- data_for_model_no_na[validation_index,]
 
-### Summary of the data set
+Summary of the data set
 dim(data_for_model_no_na)
    [1] 268   8
 dim(validation)
    [1] 65  8
 
-### Validation and Modeling dataframes have correct proportions
-### list types for each attribute
+Validation and Modeling dataframes have correct proportions
+list types for each attribute
 sapply(data_for_model_no_na, class)
              species            island    bill_length_mm     bill_depth_mm 
             "factor"          "factor"         "numeric"         "numeric" 
    flipper_length_mm       body_mass_g               sex              year 
            "integer"         "integer"          "factor"         "integer"
-### take a peek at the first 5 rows of the data
+
+take a peek at the first 5 rows of the data
 head(data_for_model_no_na)
     A tibble: 6 x 8
      species island bill_length_mm bill_depth_mm flipper_length_~ body_mass_g sex  
@@ -281,18 +282,22 @@ head(data_for_model_no_na)
    5 Adelie  Torge~           39.3          20.6              190        3650 male 
    6 Adelie  Torge~           39.2          19.6              195        4675 male 
    ... with 1 more variable: year <int>
-### list the levels for the class
+
+list the levels for the class
 levels(data_for_model_no_na$species)
    [1] "Adelie"    "Chinstrap" "Gentoo"
 Looking at the above data reads, the modeling dataframe checks out.
-### summarize the class distribution
+
+summarize the class distribution
 percentage <- prop.table(table(data_for_model_no_na$species)) * 100
 cbind(freq=table(data_for_model_no_na$species), percentage=round(percentage,1))
              freq percentage
    Adelie     117       43.7
    Chinstrap   55       20.5
    Gentoo      96       35.8
-### summarize attribute distributions
+
+summarize attribute distributions
+
 summary(data_for_model_no_na)
          species          island    bill_length_mm  bill_depth_mm  
     Adelie   :117   Biscoe   :135   Min.   :32.10   Min.   :13.10  
@@ -308,55 +313,70 @@ summary(data_for_model_no_na)
     Mean   :200.8     Mean   :4192                Mean   :2008  
     3rd Qu.:212.2     3rd Qu.:4750                3rd Qu.:2009  
     Max.   :231.0     Max.   :6050                Max.   :2009
-### Visualize Data set
+
+Visualize Data set
 
 
-### split input and output (not using "Island" feature)
+split input and output (not using "Island" feature)
 x <- data_for_model_no_na[,3:6]
 y <- data_for_model_no_na[,1]
-### barplot for class breakdown
-plot(y)
-![Class Bar Plot](https://github.com/cphillips103/palmerpenguins/blob/main/penguin-images/barplotclass.png) 
-### scatterplot matrix
-featurePlot(x=x, y=y$species, plot="ellipse")
- ![Scatter Plot Matrix](https://github.com/cphillips103/palmerpenguins/blob/main/penguin-images/catterplotmatrix.png)
-### box and whisker plots for each attribute
-featurePlot(x=x, y=y$species, plot="box")
- ![Feature Box Plot](https://github.com/cphillips103/palmerpenguins/blob/main/penguin-images/featureplot.png)
-### density plots for each attribute by class value
-scales <- list(x=list(relation="free"), y=list(relation="free"))
-featurePlot(x=x, y=y$species, plot="density", scales=scales)
- ![Feature Density Plot](https://github.com/cphillips103/palmerpenguins/blob/main/penguin-images/featurehistograms2.png)
-### Evaluate 5 different Algorithms
 
-### Run algorithms using 10-fold cross validation
+barplot for class breakdown
+plot(y)
+
+![Class Bar Plot](https://github.com/cphillips103/palmerpenguins/blob/main/penguin-images/barplotclass.png) 
+
+scatterplot matrix
+featurePlot(x=x, y=y$species, plot="ellipse")
+
+ ![Scatter Plot Matrix](https://github.com/cphillips103/palmerpenguins/blob/main/penguin-images/catterplotmatrix.png)
+
+box and whisker plots for each attribute
+
+featurePlot(x=x, y=y$species, plot="box")
+
+![Feature Box Plot](https://github.com/cphillips103/palmerpenguins/blob/main/penguin-images/featureplot.png)
+
+density plots for each attribute by class value
+
+scales <- list(x=list(relation="free"), y=list(relation="free"))
+
+featurePlot(x=x, y=y$species, plot="density", scales=scales)
+
+![Feature Density Plot](https://github.com/cphillips103/palmerpenguins/blob/main/penguin-images/featurehistograms2.png)
+
+Evaluate 5 different Algorithms
+
+Run algorithms using 10-fold cross validation
 control <- trainControl(method="cv", number=10, savePredictions = TRUE)
 metric <- "Accuracy"
-### a) linear algorithms
+
+a) linear algorithms
 set.seed(7)
+
 fit.lda <- train(species~., data=data_for_model_no_na, method="lda", metric=metric, trControl=control)
 
 
-### b) nonlinear algorithms
-### CART
+b) nonlinear algorithms
+CART
 set.seed(7)
 fit.cart <- train(species~., data=data_for_model_no_na, method="rpart", metric=metric, trControl=control)
 
-### kNN
+kNN
 set.seed(7)
 fit.knn <- train(species~., data=data_for_model_no_na, method="knn", metric=metric, trControl=control)
 
-### c) advanced algorithms
-### SVM
+c) advanced algorithms
+SVM
 set.seed(7)
 fit.svm <- train(species~., data=data_for_model_no_na, method="svmRadial", metric=metric, trControl=control)
 
-### Random Forest
+Random Forest
 set.seed(7)
 fit.rf <- train(species~., data=data_for_model_no_na, method="rf", metric=metric, trControl=control)
 
 
-### summarize accuracy of models
+summarize accuracy of models
 results <- resamples(list(lda=fit.lda, cart=fit.cart, knn=fit.knn, svm=fit.svm, rf=fit.rf))
 summary(results)
    
@@ -382,13 +402,14 @@ summary(results)
    svm  0.9379475 1.0000000 1.0000000 0.9937947 1.0000000 1.0000000    0
    rf   0.9379475 1.0000000 1.0000000 0.9880132 1.0000000 1.0000000    0
 
-### At first blush, lda has the highest accuracy with SVM and rf following closely
+At first blush, lda has the highest accuracy with SVM and rf following closely
 
-### Here we visually compare accuracy of the models
+Here we visually compare accuracy of the models
 dotplot(results)
+
 ![Accuracy Dot Plot](https://github.com/cphillips103/palmerpenguins/blob/main/penguin-images/accuracyplot.png) 
 
-### Summarize Best Model
+Summarize Best Model
 print(fit.lda)
    Linear Discriminant Analysis 
    
@@ -404,7 +425,8 @@ print(fit.lda)
      Accuracy   Kappa    
      0.9962963  0.9943038
 
-estimate skill of best model on the validation dataset
+Estimate skill of best model on the validation dataset
+
 predictions <- predict(fit.lda, validation)
 confusionMatrix(predictions, validation$species)
    Confusion Matrix and Statistics
