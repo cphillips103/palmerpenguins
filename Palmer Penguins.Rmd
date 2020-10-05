@@ -1,8 +1,9 @@
 ---
 title: "R Notebook"
 output:
-  pdf_document: default
+  word_document: default
   html_notebook: default
+  pdf_document: default
 ---
 
 This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
@@ -61,47 +62,41 @@ library(ggplot2)
 library(gridExtra)
 library(caret)
 library(ellipse)
-```
-
-```{r}
 library(cluster) 
-
 library(fpc)
-
 library(factoextra)
-
 library(knitr)
 ```
 
 
 ```{r}
-#Initial look at the raw data set
+#Initial look at the reduced data set
 head(penguins)
 ```
-
-```{r}
-#Look at the reduced data set
-head(penguins)
-```
-
+### Some data will likely not be necesary for prediction purposes like "sex" and "year". 
 
 
 ```{r}
-#Look at the data set
+#Look at the data set columns and data types.
 str(penguins)
 ```
-
+### Essentially, we have three species: "Adelie", "Chinstrap", and "Gentoo". 
+### The penguins are located across three islands: "Biscoe", "Dream", and "Torgersen"
 
 ```{r}
 #Look at number of species in data set
 table(penguins$species)
 ```
 ```{r}
+#Taking a looka tht dimensions of the reduced data set
 dim(penguins)
 ```
+### There are 344 rows, matching the count of penguins with 8 columns.
+### However, the data does include some "NA" or non measured penguins. Those rows will need ## to be dropped for the machine learning analysis.
+
 
 ```{r}
-#Copy data into new datafrme and look at Column names for calculations
+#Copy data into new dataframe and look at Column names for calculations
 
 df <- penguins
 names(df)
@@ -111,10 +106,17 @@ names(df)
 ```{r}
 #Initial plot to see which parameters might yield clues about species types
 #Species vs body mass
+
 bp<-ggplot(aes(x = species, y = body_mass_g, fill=species), data = df) + geom_boxplot() + coord_flip()
 
 bp + scale_fill_hue(l=40, c=35)
 ```
+### It appears for body mass that the Chinstrap and Adelie penguins share some
+### similarities, while the Gentoo penguins are heavier.
+
+
+
+
 
 ```{r}
 #Initial plot to see which parameters might yield clues about species types
@@ -123,6 +125,10 @@ bp<-ggplot(aes(x = species, y = bill_length_mm, fill=species), data = df) + geom
 
 bp + scale_fill_hue(l=40, c=35)
 ```
+### On the other hand, the Chinstrap and Gentoo penguins share similar
+### bill length.
+
+
 
 ```{r}
 #Initial plot to see which parameters might yield clues about species types
@@ -132,6 +138,8 @@ bp<-ggplot(aes(x = species, y = bill_depth_mm, fill=species), data = df) + geom_
 bp + scale_fill_hue(l=40, c=35)
 ```
 
+### Chinstrap and Adelie penguins have overlap in bill depth.
+
 ```{r}
 #Initial plot to see which parameters might yield clues about species types
 #Species vs flipper length
@@ -140,13 +148,13 @@ bp<-ggplot(aes(x = species, y = flipper_length_mm, fill=species), data = df) + g
 bp + scale_fill_hue(l=40, c=35)
 
 ```
-
+### And lastly, Chinstrap and Adelie penguins have some overlap in flipper length
 
 
 
 
 ```{r}
-#Grid analysis of histograms of the parameers: Lengt and Width and the Petal Length and Width.
+#Grid analysis of histograms of the parameters: Length and Width and the Petal Length and Width.
 # "species"           "island"            "bill_length_mm"    "bill_depth_mm"     "flipper_length_mm"
 # "body_mass_g"       "sex"               "year"     
 
@@ -165,11 +173,14 @@ p4 <- ggplot(aes(x = body_mass_g, fill = species), data = df) +
 grid.arrange(p1, p2, p3, p4, ncol = 2)
 ```
 
-```{r}
-str(penguins)
-```
+### Again, using the histograms, we the same overlaps in a more colorful fashion.
+
+
 
 ```{r}
+
+#Looking at which penguins were measure on which islands
+
 ggplot(penguins, aes(x = island, fill = species)) +
   geom_bar(alpha = 0.8) +
   scale_fill_manual(values = c("darkorange","purple","cyan4"),
@@ -180,7 +191,9 @@ ggplot(penguins, aes(x = island, fill = species)) +
 
 
 ```
-
+### It would appear for the study that Adelie penguins can be found on all
+### three islands, which Chinstraps were exclusive to only Dream and
+### Gentoo exclusive only to Biscoe.
 
 ```{r}
 penguins %>%
@@ -189,86 +202,128 @@ penguins %>%
   scale_colour_manual(values = c("darkorange","purple","cyan4")) +
   scale_fill_manual(values = c("darkorange","purple","cyan4"))
 ```
+### The pairwise graph sums up our previous findings.
+
+
 
 ```{r}
 
-#Variables used in clustering "bill_length_mm"  "bill_depth_mm" "flipper_length_mm" "body_mass_g"
+#Before modeling, it is good to look to see if there is any clustering in
+#the data set
 
+#Variables used in clustering "Island", bill_length_mm", "bill_depth_mm",
+#"flipper_length_mm", and "body_mass_g"
+
+#Seed for starting number used to generate a sequence of random numbers
 set.seed(20)
+
+#Creating new dataframe for clustering.
 data_for_clustering <- df
 
-
+#Dropping "NA" values
 data_for_clustering_no_na <- drop_na(data_for_clustering)
 
 #kmeans data clustering partitioning (assuming 3 centers or clusters).
 
-clusters_penguins <- kmeans(data_for_clustering_no_na[,3:6], nstart = 20, centers = 3)
+#Using Species as the target, with features "bill_length_mm" "bill_depth_mm"     #"flipper_length_mm" and "body_mass_g" 
 
-plotcluster(data_for_clustering_no_na[,3:6], clusters_penguins$cluster, color = TRUE, shade = TRUE)
+clusters_penguins <- kmeans(data_for_clustering_no_na[,4:6], centers = 3)
 
+plotcluster(data_for_clustering_no_na[,3:6], clusters_penguins$cluster, color = TRUE, shade = TRUE, xlab="", ylab="")
+
+```
+
+#Clustering does indicate that there is some separation in the penguin data
+#that might lend itself for modeling. 
+
+```{r}
+#Creating clustering table to exam if there is proper separation
 penguins_no_na <- drop_na(penguins)
 
 table(clusters_penguins$cluster, penguins_no_na$species)
-
-
 ```
+#It appears that some of the penguins aren't properly categorized due to the
+#feature overlaps
+
+
+
+
 #Modeling Work
 #Goal is to determine if a model can be built to predict the species of penguin
 #based on measurements
 
+#Data will be split into a test set and a validation set.
+
 ```{r}
 #Create a Validation Dataset
-set.seed(3456)
-validation_index <- createDataPartition(data_for_clustering_no_na$species, p=0.80, list=FALSE)
+
+#Starting with clean dataframe and removing "NA" values
+
+
+data_for_model <- df
+
+#Dropping "NA" values
+data_for_model_no_na <- drop_na(data_for_model)
+
+
+set.seed(300)
+
+validation_index <- createDataPartition(data_for_model_no_na$species, p=0.80, list=FALSE)
+
 # select 20% of the data for validation
-validation <- data_for_clustering_no_na[-validation_index,]
+validation <- data_for_model_no_na[-validation_index,]
+
+
 # use the remaining 80% of data to training and testing the models
-data_for_clustering_no_na <- data_for_clustering_no_na[validation_index,]
+data_for_model_no_na <- data_for_model_no_na[validation_index,]
 
 ```
 
 ```{r}
 #Summary of the data set
-dim(data_for_clustering_no_na)
+dim(data_for_model_no_na)
+dim(validation)
 ```
+###Validation and Modeling dataframes have correct proportions
 
 ```{r}
 # list types for each attribute
-sapply(data_for_clustering_no_na, class)
+sapply(data_for_model_no_na, class)
 ```
 
 ```{r}
 # take a peek at the first 5 rows of the data
-head(data_for_clustering_no_na)
+head(data_for_model_no_na)
 ```
 
 
 ```{r}
 
-2
 # list the levels for the class
-levels(data_for_clustering_no_na$species)
+levels(data_for_model_no_na$species)
 ```
+#Looking at the above data reads, the modeling dataframe checks out.
+
 ```{r}
 
 # summarize the class distribution
-percentage <- prop.table(table(data_for_clustering_no_na$species)) * 100
-cbind(freq=table(data_for_clustering_no_na$species), percentage=percentage)
+percentage <- prop.table(table(data_for_model_no_na$species)) * 100
+cbind(freq=table(data_for_model_no_na$species), percentage=round(percentage,1))
 
 ```
 
 ```{r}
 # summarize attribute distributions
-summary(data_for_clustering_no_na)
+summary(data_for_model_no_na)
 ```
 
 ```{r}
 #Visualize Data set
 
 
-# split input and output
-x <- data_for_clustering_no_na[,3:6]
-y <- data_for_clustering_no_na[,1]
+# split input and output (not using "Island" feature)
+x <- data_for_model_no_na[,3:6]
+y <- data_for_model_no_na[,1]
 
 
 ```
@@ -291,16 +346,13 @@ featurePlot(x=x, y=y$species, plot="box")
 
 ```{r}
 
-1
-2
-3
 # density plots for each attribute by class value
 scales <- list(x=list(relation="free"), y=list(relation="free"))
 featurePlot(x=x, y=y$species, plot="density", scales=scales)
 ```
 
 ```{r}
-#Evaluate Some Algorithms
+#Evaluate 5 different Algorithms
 
 # Run algorithms using 10-fold cross validation
 control <- trainControl(method="cv", number=10, savePredictions = TRUE)
@@ -313,21 +365,26 @@ metric <- "Accuracy"
 
 # a) linear algorithms
 set.seed(7)
-fit.lda <- train(species~., data=data_for_clustering_no_na, method="lda", metric=metric, trControl=control)
+fit.lda <- train(species~., data=data_for_model_no_na, method="lda", metric=metric, trControl=control)
+
+
 # b) nonlinear algorithms
 # CART
 set.seed(7)
-fit.cart <- train(species~., data=data_for_clustering_no_na, method="rpart", metric=metric, trControl=control)
+fit.cart <- train(species~., data=data_for_model_no_na, method="rpart", metric=metric, trControl=control)
+
 # kNN
 set.seed(7)
-fit.knn <- train(species~., data=data_for_clustering_no_na, method="knn", metric=metric, trControl=control)
+fit.knn <- train(species~., data=data_for_model_no_na, method="knn", metric=metric, trControl=control)
+
 # c) advanced algorithms
 # SVM
 set.seed(7)
-fit.svm <- train(species~., data=data_for_clustering_no_na, method="svmRadial", metric=metric, trControl=control)
+fit.svm <- train(species~., data=data_for_model_no_na, method="svmRadial", metric=metric, trControl=control)
+
 # Random Forest
 set.seed(7)
-fit.rf <- train(species~., data=data_for_clustering_no_na, method="rf", metric=metric, trControl=control)
+fit.rf <- train(species~., data=data_for_model_no_na, method="rf", metric=metric, trControl=control)
 ```
 
 ```{r}
@@ -335,23 +392,31 @@ fit.rf <- train(species~., data=data_for_clustering_no_na, method="rf", metric=m
 results <- resamples(list(lda=fit.lda, cart=fit.cart, knn=fit.knn, svm=fit.svm, rf=fit.rf))
 summary(results)
 ```
+#At first blush, lda has the highest accuracy with SVM and rf following closely
+
+
+
 ```{r}
 
-# compare accuracy of models
+# Here we visually compare accuracy of the models
 dotplot(results)
 ```
 
 ```{r}
 # Summarize Best Model
-print(fit.svm)
+print(fit.lda)
 
 ```
 
 ```{r}
 
 # estimate skill of best model on the validation dataset
-predictions <- predict(fit.svm, validation)
+predictions <- predict(fit.lda, validation)
 confusionMatrix(predictions, validation$species)
 
 ```
 
+###In Summary, the data set is rather small with only 344 measurements.
+###However, there appears to be enough variance in the features to be able
+###to use modeling to predict the penguin species based on the measurements.
+###Possible next steps would be to gather more penguin data.
