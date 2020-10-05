@@ -27,13 +27,13 @@ These data were collected from 2007 - 2009 by Dr. Kristen Gorman with the Palmer
 
 ### Analysis Variables And Software
 
-#Install Remote Package if not already available
+>>>Install Remote Package if not already available
 
-#install.packages("remotes")
+>>>install.packages("remotes")
 
-#Install Palmer Penguin Data
-#remotes::install_github("allisonhorst/palmerpenguins")
-#citation(“palmerpenguins”) #> #> To cite palmerpenguins in publications use: #> #> Horst AM, Hill AP, Gorman KB (2020). palmerpenguins: Palmer #> Archipelago (Antarctica) penguin data. R package version 0.1.0. #> https://allisonhorst.github.io/palmerpenguins/. doi: #> 10.5281/zenodo.3960218. #> #> A BibTeX entry for LaTeX users is #> #> @Manual{, #> title = {palmerpenguins: Palmer Archipelago (Antarctica) penguin data}, #> author = {Allison Marie Horst and Alison Presmanes Hill and Kristen B Gorman}, #> year = {2020}, #> note = {R package version 0.1.0}, #> doi = {10.5281/zenodo.3960218}, #> url = {https://allisonhorst.github.io/palmerpenguins/}, #> } #> Also help from Jason Brownlee on machine learning in R February 3, 2016 article
+>>>Install Palmer Penguin Data
+>>>remotes::install_github("allisonhorst/palmerpenguins")
+>>>citation(“palmerpenguins”) #> #> To cite palmerpenguins in publications use: #> #> Horst AM, Hill AP, Gorman KB (2020). palmerpenguins: Palmer #> Archipelago (Antarctica) penguin data. R package version 0.1.0. #> https://allisonhorst.github.io/palmerpenguins/. doi: #> 10.5281/zenodo.3960218. #> #> A BibTeX entry for LaTeX users is #> #> @Manual{, #> title = {palmerpenguins: Palmer Archipelago (Antarctica) penguin data}, #> author = {Allison Marie Horst and Alison Presmanes Hill and Kristen B Gorman}, #> year = {2020}, #> note = {R package version 0.1.0}, #> doi = {10.5281/zenodo.3960218}, #> url = {https://allisonhorst.github.io/palmerpenguins/}, #> } #> Also help from Jason Brownlee on machine learning in R February 3, 2016 article
 #Load Palmer Penguin library and data set
 library(palmerpenguins)
 data(package = 'palmerpenguins')
@@ -119,7 +119,7 @@ bp<-ggplot(aes(x = species, y = body_mass_g, fill=species), data = df) + geom_bo
 bp + scale_fill_hue(l=40, c=35)
 ## Warning: Removed 2 rows containing non-finite values (stat_boxplot).
 
-![Body Mass Box Plot]()
+![Body Mass Box Plot](https://github.com/cphillips103/palmerpenguins/blob/main/penguin-images/bodymassboxplot.png)
   ### It appears for body mass that the Chinstrap and Adelie penguins share some ### similarities, while the Gentoo penguins are heavier.
 #Initial plot to see which parameters might yield clues about species types
 #Species vs bill length
@@ -128,7 +128,7 @@ bp<-ggplot(aes(x = species, y = bill_length_mm, fill=species), data = df) + geom
 bp + scale_fill_hue(l=40, c=35)
 ## Warning: Removed 2 rows containing non-finite values (stat_boxplot).
 
-![Bill Length Box Plot]()
+![Bill Length Box Plot](https://github.com/cphillips103/palmerpenguins/blob/main/penguin-images/billlengthboxplot.png)
   ### On the other hand, the Chinstrap and Gentoo penguins share similar ### bill length.
 #Initial plot to see which parameters might yield clues about species types
 #Species vs bill depth
@@ -136,7 +136,7 @@ bp<-ggplot(aes(x = species, y = bill_depth_mm, fill=species), data = df) + geom_
 
 bp + scale_fill_hue(l=40, c=35)
 ## Warning: Removed 2 rows containing non-finite values (stat_boxplot).
-![Bill Depth Box Plot]() 
+![Bill Depth Box Plot](https://github.com/cphillips103/palmerpenguins/blob/main/penguin-images/billdepthboxplot.png) 
 Chinstrap and Adelie penguins have overlap in bill depth.
 #Initial plot to see which parameters might yield clues about species types
 #Species vs flipper length
@@ -144,7 +144,7 @@ bp<-ggplot(aes(x = species, y = flipper_length_mm, fill=species), data = df) + g
 
 bp + scale_fill_hue(l=40, c=35)
 ## Warning: Removed 2 rows containing non-finite values (stat_boxplot).
-![Flipper Length Box Plot]()
+![Flipper Length Box Plot](https://github.com/cphillips103/palmerpenguins/blob/main/penguin-images/flipperlengthboxplot.png)
   ### And lastly, Chinstrap and Adelie penguins have some overlap in flipper length
 #Grid analysis of histograms of the parameters: Length and Width and the Petal Length and Width.
 # "species"           "island"            "bill_length_mm"    "bill_depth_mm"     "flipper_length_mm"
@@ -172,7 +172,7 @@ grid.arrange(p1, p2, p3, p4, ncol = 2)
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ## Warning: Removed 2 rows containing non-finite values (stat_bin).
 
-![Histogram Plot]() 
+![Histogram Plot](https://github.com/cphillips103/palmerpenguins/blob/main/penguin-images/featurehistograms.png) 
 Again, using the histograms, we the same overlaps in a more colorful fashion.
 #Looking at which penguins were measure on which islands
 
@@ -184,7 +184,7 @@ ggplot(penguins, aes(x = island, fill = species)) +
   facet_wrap(~species, ncol = 1) +
   coord_flip()
 
-  ![Count By Island Plot]()
+  ![Count By Island Plot](https://github.com/cphillips103/palmerpenguins/blob/main/penguin-images/countbyisland.png)
   ### It would appear for the study that Adelie penguins can be found on all ### three islands, which Chinstraps were exclusive to only Dream and ### Gentoo exclusive only to Biscoe.
 penguins %>%
   select(species, body_mass_g, ends_with("_mm")) %>%
@@ -240,7 +240,7 @@ penguins %>%
 ## Warning: Removed 2 rows containing missing values (geom_point).
 ## Warning: Removed 2 rows containing non-finite values (stat_density).
 
-![Pairwise Plot]()
+![Pairwise Plot](https://github.com/cphillips103/palmerpenguins/blob/main/penguin-images/pairwives.png)
   ### The pairwise graph sums up our previous findings.
 #Before modeling, it is good to look to see if there is any clustering in
 #the data set
@@ -280,7 +280,7 @@ plotcluster(data_for_clustering_no_na[,3:6], clusters_penguins$cluster, color = 
 ## Warning in box(...): "shade" is not a graphical parameter
 ## Warning in title(...): "color" is not a graphical parameter
 ## Warning in title(...): "shade" is not a graphical parameter
-![Cluster Plot]() 
+![Cluster Plot](https://github.com/cphillips103/palmerpenguins/blob/main/penguin-images/clusterplot.png) 
 #Clustering does indicate that there is some separation in the penguin data #that might lend itself for modeling.
 #Creating clustering table to exam if there is proper separation
 penguins_no_na <- drop_na(penguins)
@@ -378,17 +378,17 @@ x <- data_for_model_no_na[,3:6]
 y <- data_for_model_no_na[,1]
 # barplot for class breakdown
 plot(y)
-![Class Bar Plot]() 
+![Class Bar Plot](https://github.com/cphillips103/palmerpenguins/blob/main/penguin-images/barplotclass.png) 
 # scatterplot matrix
 featurePlot(x=x, y=y$species, plot="ellipse")
- ![BScatter Plot Matrix]()
+ ![Scatter Plot Matrix](https://github.com/cphillips103/palmerpenguins/blob/main/penguin-images/catterplotmatrix.png)
 # box and whisker plots for each attribute
 featurePlot(x=x, y=y$species, plot="box")
- ![Feature Box Plot]()
+ ![Feature Box Plot](https://github.com/cphillips103/palmerpenguins/blob/main/penguin-images/featureplot.png)
 # density plots for each attribute by class value
 scales <- list(x=list(relation="free"), y=list(relation="free"))
 featurePlot(x=x, y=y$species, plot="density", scales=scales)
- ![Feature Density Plot]()
+ ![Feature Density Plot](https://github.com/cphillips103/palmerpenguins/blob/main/penguin-images/featurehistograms2.png)
 #Evaluate 5 different Algorithms
 
 # Run algorithms using 10-fold cross validation
@@ -444,7 +444,7 @@ summary(results)
 #At first blush, lda has the highest accuracy with SVM and rf following closely
 # Here we visually compare accuracy of the models
 dotplot(results)
-![Accuracy Dot Plot]() 
+![Accuracy Dot Plot](https://github.com/cphillips103/palmerpenguins/blob/main/penguin-images/accuracyplot.png) 
 # Summarize Best Model
 print(fit.lda)
 ## Linear Discriminant Analysis 
